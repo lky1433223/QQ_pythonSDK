@@ -135,3 +135,5 @@ dmypy.json
 /.idea/.gitignore
 /.idea/QQ_pythonSDK.iml
 /.idea/vcs.xml
+
+go_cqhttp/
