@@ -106,8 +106,8 @@ class QQApp:
 
 
 if __name__ == "__main__":
-    webapp = QQApp(ip="127.0.0.1", port=8080, group_list=[1067245310, 839640112],
-                   user_list={"541665621": "ShiinaRikka"})
+    webapp = QQApp(ip="127.0.0.1", port=8080, group_list=[],
+                   user_list={})
     webapp.run()
     while True:
         msg = input("输入消息")
