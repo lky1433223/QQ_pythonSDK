@@ -2,15 +2,15 @@ import json
 import time
 import websocket
 from typing import Callable
-import QQdealer
+import message_dealer
 
 
-class WebApp:
+class QQApp:
     def __init__(self, group_list=None, user_list=None, ip: str = "127.0.0.1", port: int = 8080,
                  callback: Callable[[str], None] = lambda x: print(x)):
 
         if user_list is None:
-            user_list = [int]
+            user_list = {}
         if group_list is None:
             group_list = [int]
         self.url = "ws://{}:{}/".format(ip, port)
@@ -23,16 +23,18 @@ class WebApp:
         self.group_list = group_list
         self.user_list = user_list
         self.callback = callback
+        self.Dealear = message_dealer.MessageDealer(user_list=self.user_list)
 
     def deal_message(self, message):
         message = json.loads(message)
-        res_message = None
         if message['post_type'] == 'message':
             if message['message_type'] == 'group':
                 if message['group_id'] in self.group_list:
-                    res_message = QQdealer.deal_message(message['message'])
-
-        self.callback(res_message)
+                    user = str(message['user_id'])
+                    if user in self.user_list:
+                        user = self.user_list[user]
+                    res_message = "[{}]{}".format(user, self.Dealear.deal_message(message['message']))
+                    self.callback(res_message)
 
     def send(self, message: dict):
         if type(message) is not dict:
@@ -55,6 +57,7 @@ class WebApp:
 
 
 if __name__ == "__main__":
-    webapp = WebApp(ip="127.0.0.1", port=8080, group_list=[1067245310])
+    webapp = QQApp(ip="127.0.0.1", port=8080, group_list=[1067245310, 839640112],
+                   user_list={"541665621": "ShiinaRikka"})
     webapp.run()
     time.sleep(10)
